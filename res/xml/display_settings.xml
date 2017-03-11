@@ -32,12 +32,41 @@
                 settings:keywords="@string/keywords_display_auto_brightness"
                 android:summary="@string/auto_brightness_summary"
                 android:persistent="false" />
+                
+        <CheckBoxPreference
+                android:key="systembar_hide"
+                android:title="@string/systembar_hide_title"/>
+
+        <SwitchPreference
+                android:key="button_lights_enable"
+                android:title="@string/button_lights_enable_title"
+                android:summary="@string/button_lights_enable_summary"
+                android:disableDependentsState="false"
+                android:persistent="false" />
+
+        <ListPreference
+                android:key="button_lights_timeout"
+                android:title="@string/button_lights_timeout_title"
+                android:summary="@string/button_lights_timeout_summary"
+                android:persistent="false"
+                android:dependency="button_lights_enable"
+                android:entries="@array/button_lights_timeout_entries"
+                android:entryValues="@array/button_lights_timeout_values" />
 
         <PreferenceScreen
                 android:key="wallpaper"
                 android:title="@string/wallpaper_settings_title"
                 settings:keywords="@string/keywords_display_wallpaper"
                 android:fragment="com.android.settings.WallpaperTypeSettings" />
+
+        <ListPreference
+                android:key="screen_orientation"
+                android:title="@string/screen_orientation"
+                android:summary="@string/m_horizontal_screen"
+                android:persistent="false"
+                android:entries="@array/set_screen_orientation_entries"
+                android:entryValues="@array/set_screen_orientation_values" />
+
 
         <ListPreference
                 android:key="screen_timeout"
@@ -81,5 +110,39 @@
                 android:title="@string/wifi_display_settings_title"
                 settings:keywords="@string/keywords_display_cast_screen"
                 android:fragment="com.android.settings.wfd.WifiDisplaySettings" />
+    <!-- $_rbox_$_modify_$_by huangjc --> 
+        <SwitchPreference
+                android:key="multi_window"
+                android:title="@string/multi_window_title"
+                android:summary="@string/multi_window_summary"
+                android:persistent="false" />
+     <!-- $_rbox_$_modify_$_end -->
+        <!-- $_rbox_$_modify_$_by cx -->
+       <Preference android:key="screenscale"
+                android:title="@string/screenscale"
+                android:dialogTitle="@string/screenscale" >               
+            <intent
+               android:action="android.intent.action.MAIN"
+               android:targetPackage="com.android.settings"
+               android:targetClass="com.android.settings.screen.ScreenScaleActivity" />
+        </Preference>
+		<!-- add by wgh-->
+		<!--
+		<PreferenceScreen
+                android:key="dualscreen"
+                android:title="@string/dualscreen_setting"
+                android:fragment="com.android.settings.dualscreen.DualscreenSettings" />
+        -->
+		
+        <ListPreference
+                android:key="main_screen_interface"/>
+
+        <ListPreference
+                android:key="main_screen_mode"/>
+        <ListPreference
+                android:key="aux_screen_interface"/>
+        <ListPreference
+                android:key="aux_screen_mode"/>
+        <!-- $_rbox_$_modify_$_end -->
 
 </PreferenceScreen>

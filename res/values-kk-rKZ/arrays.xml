@@ -37,6 +37,7 @@
     <item msgid="7489864775127957179">"5 минут"</item>
     <item msgid="2314124409517439288">"10 минут"</item>
     <item msgid="6864027152847611413">"30 минут"</item>
+    <item>"Ешқашан"</item>
   </string-array>
   <string-array name="dream_timeout_entries">
     <item msgid="3149294732238283185">"Ешқашан"</item>
@@ -534,5 +535,7 @@
     <item msgid="3170497246594232819">"Қызылкүрең"</item>
     <item msgid="4608643045752965568">"Қызғылт"</item>
     <item msgid="6131821495505931173">"Қызыл"</item>
+    <item msgid="6131821495505931173">"апельсин"</item>
+    <item msgid="6131821495505931173">"ақшыл сұр"</item>
   </string-array>
 </resources>

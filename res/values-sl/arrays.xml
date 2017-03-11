@@ -37,6 +37,7 @@
     <item msgid="7489864775127957179">"5 minut"</item>
     <item msgid="2314124409517439288">"10 minut"</item>
     <item msgid="6864027152847611413">"30 minut"</item>
+    <item>"Nikoli"</item>
   </string-array>
   <string-array name="dream_timeout_entries">
     <item msgid="3149294732238283185">"Nikoli"</item>
@@ -534,5 +535,7 @@
     <item msgid="3170497246594232819">"Vijolična"</item>
     <item msgid="4608643045752965568">"Rožnata"</item>
     <item msgid="6131821495505931173">"Rdeča"</item>
+    <item msgid="6131821495505931173">"Orange"</item>
+    <item msgid="6131821495505931173">"Svetlo siva"</item>
   </string-array>
 </resources>

@@ -37,6 +37,7 @@
     <item msgid="7489864775127957179">"5 минути"</item>
     <item msgid="2314124409517439288">"10 минути"</item>
     <item msgid="6864027152847611413">"30 минути"</item>
+    <item>"Никога"</item>
   </string-array>
   <string-array name="dream_timeout_entries">
     <item msgid="3149294732238283185">"Никога"</item>
@@ -534,5 +535,7 @@
     <item msgid="3170497246594232819">"лилаво"</item>
     <item msgid="4608643045752965568">"розово"</item>
     <item msgid="6131821495505931173">"червено"</item>
+    <item msgid="6131821495505931173">"оранжев"</item>
+	<item msgid="6131821495505931173">"сив"</item>
   </string-array>
 </resources>

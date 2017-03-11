@@ -37,6 +37,7 @@
     <item msgid="7489864775127957179">"5 րոպե"</item>
     <item msgid="2314124409517439288">"10 րոպե"</item>
     <item msgid="6864027152847611413">"30 րոպե"</item>
+    <item>"Երբեք"</item>
   </string-array>
   <string-array name="dream_timeout_entries">
     <item msgid="3149294732238283185">"Երբեք"</item>
@@ -534,5 +535,7 @@
     <item msgid="3170497246594232819">"Մանուշակագույն"</item>
     <item msgid="4608643045752965568">"Վարդագույն"</item>
     <item msgid="6131821495505931173">"Կարմիր"</item>
+    <item msgid="6131821495505931173">"նարինջ"</item>
+    <item msgid="6131821495505931173">"բաց մոխրագույն"</item>
   </string-array>
 </resources>

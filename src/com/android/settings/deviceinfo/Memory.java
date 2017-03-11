@@ -58,6 +58,7 @@ import com.google.android.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.os.SystemProperties;
 
 /**
  * Panel showing storage usage on disk for known {@link StorageVolume} returned
@@ -102,6 +103,10 @@ public class Memory extends SettingsPreferenceFragment implements Indexable {
         final StorageVolume[] storageVolumes = mStorageManager.getVolumeList();
         for (StorageVolume volume : storageVolumes) {
             if (!volume.isEmulated()) {
+            	boolean buildWithUMS=SystemProperties.get("ro.factory.hasUMS", "false").equals("true");
+            	if(!buildWithUMS&&volume.getPath().equals("/mnt/internal_sd")){
+            		continue;
+            	}
                 addCategory(StorageVolumePreferenceCategory.buildForPhysical(context, volume));
             }
         }
@@ -180,8 +185,8 @@ public class Memory extends SettingsPreferenceFragment implements Indexable {
     public void onPrepareOptionsMenu(Menu menu) {
         final MenuItem usb = menu.findItem(R.id.storage_usb);
         UserManager um = (UserManager)getActivity().getSystemService(Context.USER_SERVICE);
-        boolean usbItemVisible = !isMassStorageEnabled()
-                && !um.hasUserRestriction(UserManager.DISALLOW_USB_FILE_TRANSFER);
+        boolean usbItemVisible = //isMassStorageEnabled() //modify by lly for all state
+                 !um.hasUserRestriction(UserManager.DISALLOW_USB_FILE_TRANSFER);
         usb.setVisible(usbItemVisible);
     }
 
@@ -220,7 +225,6 @@ public class Memory extends SettingsPreferenceFragment implements Indexable {
             ConfirmClearCacheFragment.show(this);
             return true;
         }
-
         for (StorageVolumePreferenceCategory category : mCategories) {
             Intent intent = category.intentForClick(preference);
             if (intent != null) {

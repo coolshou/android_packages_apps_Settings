@@ -48,6 +48,7 @@
         <item>5 minutes</item>
         <item>10 minutes</item>
         <item>30 minutes</item>
+	<item>Never</item>
     </string-array>
 
     <!-- Do not translate. -->
@@ -66,6 +67,8 @@
         <item>600000</item>
         <!-- Do not translate. -->
         <item>1800000</item>
+        <!-- Do not translate. -->
+	<item>2147483647</item>
     </string-array>
 
     <!-- Display settings.  The delay in inactivity before the dream is shown. These are shown in a list dialog. -->
@@ -380,6 +383,31 @@
         <item>Never</item>
     </string-array>
 
+    <!-- Wi-Fi settings. Presented as a list dialog to the user to choose the Wi-Fi sleep policy. -->
+    <string-array name="new_wifi_sleep_policy_entries">
+        <!-- Always keep Wi-Fi on when screen turns off. -->
+        <item>Always</item>
+        <!-- Keep Wi-Fi on when screen turns off and plugged in.  When on battery, go to sleep when screen turns off. -->
+        <item>Only when plugged in</item>
+        <!-- Do not keep Wi-Fi on when screen turns off.  [CHAR LIMIT=40] -->
+        <item>Never</item>
+        <!-- Use Wi-Fi intelligent sleep when screen turns off. -->
+        <item>Wi-Fi intelligent sleep</item>
+    </string-array>
+
+    <!-- Wi-Fi settings. Presented as a list dialog to the user to choose the Wi-Fi sleep policy. Used when
+         the device is Wi-Fi-only. [CHAR LIMIT=30] -->
+    <string-array name="new_wifi_sleep_policy_entries_wifi_only">
+        <!-- Always keep Wi-Fi on when screen turns off. -->
+        <item>Always</item>
+        <!-- Keep Wi-Fi on when screen turns off and plugged in.  When on battery, go to sleep when screen turns off. -->
+        <item>Only when plugged in</item>
+        <!-- Do not keep Wi-Fi on when screen turns off, for Wi-Fi-only devices, no other data connection -->
+        <item>Never</item>
+        <!-- Use Wi-Fi intelligent sleep when screen turns off. -->
+        <item>Wi-Fi intelligent sleep</item>
+    </string-array>
+
     <!-- Match with wifi_sleep_policy_entries and the values of the settings in Settings class. --> <skip />
     <!-- Do not translate. -->
     <string-array name="wifi_sleep_policy_values">
@@ -389,6 +417,8 @@
         <item>1</item>
         <!-- Do not translate. -->
         <item>0</item>
+        <!-- Do not translate. -->
+        <item>3</item>
     </string-array>
 
     <!-- Data Usage settings. Range of data usage. -->
@@ -1259,5 +1289,123 @@
         <item>Purple</item>
         <item>Pink</item>
         <item>Red</item>
+		<item>Orange</item>
+		<item>Grey</item>
     </string-array>
+    <!-- HDMI -->
+    <string-array name="hdmi_resolution_entries">
+        <item>1920x1080p-50Hz </item>
+        <item>1920x1080p-60Hz</item>
+        <item>1280x720p-50Hz</item>
+        <item>1280x720p-60Hz</item>
+        <item>720x576p-50Hz </item>
+        <item>720x480p-60Hz </item>
+    </string-array>
+    <string-array name="hdmi_resolution_values">
+        <item>1920x1080p-50\n</item>
+        <item>1920x1080p-60\n</item>
+        <item>1280x720p-50\n</item>
+        <item>1280x720p-60\n</item>
+        <item>720x576p-50\n</item>
+        <item>720x480p-60\n</item>
+    </string-array>
+    <string-array name="hdmi_lcd_timeout_entries">
+        <item>10s</item>
+        <item>20s</item>
+        <item>30s</item>
+        <item>never sleep</item>
+    </string-array>
+    <string-array name="hdmi_lcd_timeout_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>-1</item>
+    </string-array>
+       <!-- screenshot setting-->
+          <string-array name="screenshot_delay_values">
+              <item>15</item>
+              <item>30</item>
+              <item>60</item>
+              <item>120</item>
+              <item>180</item>
+              <item>240</item>
+              <item>300</item>
+       
+          </string-array>
+          <string-array name="screenshot_delay_entries">
+              <item>15seconds later</item>
+              <item>30seconds later</item>
+              <item>1minute later</item>
+              <item>2minute later</item>
+              <item>3minute later</item>
+              <item>4minute later</item>
+              <item>5minute later</item>
+       
+          </string-array>
+       
+          <string-array name="screenshot_storage_location">
+              <item>Nand Flash</item>
+              <item>SD Card</item>
+              <item>USB Storage</item>
+          </string-array>
+          <string-array name="screenshot_strorage_location_values">
+              <item>flash</item>
+              <item>sdcard</item>
+              <item>usb</item>
+          </string-array>
+    <!--ethernet mode select -->    
+    <string-array name="ethernet_mode_location">
+       <item>@string/usestatic</item>
+       <item>@string/usedhcp</item>
+    </string-array>
+   <string-array name="ethernet_mode_values">
+      <item>StaticIP</item>
+      <item>DHCP</item>
+   </string-array>
+<!--$_rbox_$_modify_$_chenzhi_20120309: add for pppoe-->
+<!--$_rbox_$_modify_$_begin-->
+    <string-array name="entries_pppoe_phy_iface" translatable="false">
+        <item>Ethernet</item>
+        <item>WiFi</item>
+    </string-array>
+
+    <string-array name="entryvalues_pppoe_phy_iface" translatable="false">
+        <item>ethernet</item>
+        <item>wifi</item>
+    </string-array>
+<!--$_rbox_$_modify_$_end-->
+
+    <string-array name="button_lights_timeout_entries">
+        <item>1.5 seconds</item>
+        <item>3 seconds</item>
+        <item>5 seconds</item>
+        <item>never</item>
+    </string-array>
+    <!-- Do not translate. -->
+    <string-array name="button_lights_timeout_values" translatable="false">
+        <!-- Do not translate. -->
+        <item>1500</item>
+        <!-- Do not translate. -->
+        <item>3000</item>
+        <!-- Do not translate. -->
+        <item>5000</item>
+        <!-- Do not translate. -->
+        <item>-1</item>
+     </string-array>
+
+    <string-array name="set_screen_orientation_entries">
+        <item>Horizontal screen</item>
+        <item>Vertical screen</item>
+        <item>Reverse horizontal screen</item>
+        <item>Reverse vertical screen</item>
+    </string-array>
+
+    <string-array name="set_screen_orientation_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+
 </resources>

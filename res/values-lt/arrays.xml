@@ -37,6 +37,7 @@
     <item msgid="7489864775127957179">"5 min."</item>
     <item msgid="2314124409517439288">"10 min."</item>
     <item msgid="6864027152847611413">"30 min."</item>
+    <item>"Niekada"</item>
   </string-array>
   <string-array name="dream_timeout_entries">
     <item msgid="3149294732238283185">"Niekada"</item>
@@ -534,5 +535,7 @@
     <item msgid="3170497246594232819">"Purpurinė"</item>
     <item msgid="4608643045752965568">"Rožinė"</item>
     <item msgid="6131821495505931173">"Raudona"</item>
+    <item msgid="6131821495505931173">"Oranžinis"</item>
+    <item msgid="6131821495505931173">"šviesiai pilka"</item>
   </string-array>
 </resources>

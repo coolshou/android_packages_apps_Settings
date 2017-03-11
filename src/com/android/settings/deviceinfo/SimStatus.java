@@ -283,8 +283,10 @@ public class SimStatus extends PreferenceActivity {
                 display = mRes.getString(R.string.radioInfo_service_in);
                 break;
             case ServiceState.STATE_OUT_OF_SERVICE:
-            case ServiceState.STATE_EMERGENCY_ONLY:
                 display = mRes.getString(R.string.radioInfo_service_out);
+                break;
+            case ServiceState.STATE_EMERGENCY_ONLY:
+                display = mRes.getString(R.string.radioInfo_service_emergency);
                 break;
             case ServiceState.STATE_POWER_OFF:
                 display = mRes.getString(R.string.radioInfo_service_off);
@@ -351,8 +353,8 @@ public class SimStatus extends PreferenceActivity {
         setSummaryText(KEY_PHONE_NUMBER, formattedNumber);
         final String imei = mPhone.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA
                 ? mPhone.getImei() : mPhone.getDeviceId();
-        setSummaryText(KEY_IMEI, imei);
-        setSummaryText(KEY_IMEI_SV, mTelephonyManager.getDeviceSoftwareVersion(/*slotId*/));
+        //setSummaryText(KEY_IMEI, imei);
+        //setSummaryText(KEY_IMEI_SV, mTelephonyManager.getDeviceSoftwareVersion(/*slotId*/));
 
         if (!mShowLatestAreaInfo) {
             removePreferenceFromScreen(KEY_LATEST_AREA_INFO);
@@ -371,6 +373,10 @@ public class SimStatus extends PreferenceActivity {
                 }
 
                 mPhone = phone;
+                if (mPhoneStateListener != null) {
+                    mTelephonyManager.listen(mPhoneStateListener,
+                            PhoneStateListener.LISTEN_NONE);
+                }
                 mPhoneStateListener = new PhoneStateListener(mSir.getSubscriptionId()) {
                     @Override
                     public void onDataConnectionStateChanged(int state) {

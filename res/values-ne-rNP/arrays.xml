@@ -37,6 +37,7 @@
     <item msgid="7489864775127957179">"५ मिनेट"</item>
     <item msgid="2314124409517439288">"१० मिनेट"</item>
     <item msgid="6864027152847611413">"३० मिनेट"</item>
+    <item>"कहिल्यै पनि होइन"</item>
   </string-array>
   <string-array name="dream_timeout_entries">
     <item msgid="3149294732238283185">"कहिल्यै पनि होइन"</item>
@@ -534,5 +535,7 @@
     <item msgid="3170497246594232819">"बैजनी"</item>
     <item msgid="4608643045752965568">"गुलाबी"</item>
     <item msgid="6131821495505931173">"रातो"</item>
+    <item msgid="6131821495505931173">"सुन्तला"</item>
+    <item msgid="6131821495505931173">"हल्का खैरो"</item>
   </string-array>
 </resources>

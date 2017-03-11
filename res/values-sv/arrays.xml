@@ -37,6 +37,7 @@
     <item msgid="7489864775127957179">"5 minuter"</item>
     <item msgid="2314124409517439288">"10 minuter"</item>
     <item msgid="6864027152847611413">"30 minuter"</item>
+    <item>"Aldrig"</item>
   </string-array>
   <string-array name="dream_timeout_entries">
     <item msgid="3149294732238283185">"Aldrig"</item>
@@ -534,5 +535,7 @@
     <item msgid="3170497246594232819">"Lila"</item>
     <item msgid="4608643045752965568">"Rosa"</item>
     <item msgid="6131821495505931173">"Röd"</item>
+    <item msgid="6131821495505931173">"Orange"</item>
+    <item msgid="6131821495505931173">"ljusgrå"</item>
   </string-array>
 </resources>

@@ -101,5 +101,9 @@ public class Settings extends SettingsActivity {
 
     public static class TopLevelSettings extends SettingsActivity { /* empty */ }
     public static class ApnSettingsActivity extends SettingsActivity { /* empty */ }
+    public static class HdmiSettingsActivity extends SettingsActivity { /* empty */ }
+    public static class ScreenshotSettingsActivity extends SettingsActivity { /* empty */ }
+    public static class UsbConnectSettingsActivity extends SettingsActivity { /* empty */ }
+    public static class DualscreenSettingsActivity extends SettingsActivity { /* empty */ }
 }
 

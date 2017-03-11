@@ -29,16 +29,20 @@ import android.os.AsyncResult;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcel;
 import android.os.SystemProperties;
 import android.telephony.CellInfo;
 import android.telephony.CellLocation;
 import android.telephony.DataConnectionRealTimeInfo;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
+import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.telephony.NeighboringCellInfo;
 import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
+import android.telephony.SubscriptionManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,12 +54,14 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.internal.telephony.Phone;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.PhoneFactory;
 import com.android.internal.telephony.PhoneStateIntentReceiver;
 import com.android.internal.telephony.TelephonyProperties;
+import com.android.internal.telephony.DefaultPhoneNotifier;
 import com.android.ims.ImsConfig;
 import com.android.ims.ImsException;
 import com.android.ims.ImsManager;
@@ -92,6 +98,8 @@ public class RadioInfo extends Activity {
 
     static final String ENABLE_DATA_STR = "Enable data connection";
     static final String DISABLE_DATA_STR = "Disable data connection";
+    public static final int RIL_OEM_HOOK_RAW_UNSOL_SCELL_INFO_REPORT = 0x00000100 + 101;
+    public static final int RIL_OEM_HOOK_STRING_GET_SCELL_INFO = 0x000000FE;
 
     private TextView mDeviceId; //DeviceId is the IMEI in GSM and the MEID in CDMA
     private TextView number;
@@ -105,6 +113,7 @@ public class RadioInfo extends Activity {
     private TextView mMwi;
     private TextView mCfi;
     private TextView mLocation;
+    private TextView mServingCell;
     private TextView mNeighboringCids;
     private TextView mCellInfo;
     private TextView mDcRtInfoTv;
@@ -131,7 +140,7 @@ public class RadioInfo extends Activity {
 
     private TelephonyManager mTelephonyManager;
     private Phone phone = null;
-    private PhoneStateIntentReceiver mPhoneStateReceiver;
+    private int mPhoneId = SubscriptionManager.DEFAULT_PHONE_INDEX;
 
     private String mPingIpAddrResult;
     private String mPingHostnameResult;
@@ -139,8 +148,16 @@ public class RadioInfo extends Activity {
     private boolean mMwiValue = false;
     private boolean mCfiValue = false;
     private List<CellInfo> mCellInfoValue;
+    private PhoneStateListenerMultiSIM mPhoneStateListener = null;
 
-    private PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
+    class PhoneStateListenerMultiSIM extends PhoneStateListener {
+        public PhoneStateListenerMultiSIM(int subId){
+            super(subId);
+            mMwiValue = false;
+            mCfiValue = false;
+            mCellInfoValue = null;
+        }
+
         @Override
         public void onDataConnectionStateChanged(int state) {
             updateDataState();
@@ -182,26 +199,54 @@ public class RadioInfo extends Activity {
             log("onDataConnectionRealTimeInfoChanged: dcRtInfo=" + dcRtInfo);
             updateDcRtInfoTv(dcRtInfo);
         }
+
+        @Override
+        public void onSignalStrengthsChanged(SignalStrength signalStrength) {
+            updateSignalStrength();
+        }
+
+        @Override
+        public void onServiceStateChanged(ServiceState serviceState) {
+            updateServiceState();
+            updatePowerState();
+            updateImsVoLteProvisionedState();
+        }
+
+        @Override
+        public void onCallStateChanged(int state, String ignored) {
+            updatePhoneState();
+        }
+
+        @Override
+        public void onOemHookRawEvent(byte[] rawData) {
+            Parcel p = Parcel.obtain();
+            p.unmarshall(rawData, 0, rawData.length);
+            p.setDataPosition(0);
+
+            final int msgId = p.readInt();
+            log("onOemHookRawEvent msgId:"+msgId);
+            if(msgId == RIL_OEM_HOOK_RAW_UNSOL_SCELL_INFO_REPORT) {
+                int scell_rat = p.readInt();
+                int bcch_freq = p.readInt();
+                int bsic = p.readInt();
+                int rxlev = p.readInt();
+                int uarfcn = p.readInt();
+                int psc = p.readInt();
+                int rscp = p.readInt();
+                if(scell_rat == 1){// UTA_RAT_GSM
+                    mServingCell.setText("bcch_freq=" + bcch_freq + ",bsic=" + bsic + ",rxlev=" + rxlev);
+                } else if(scell_rat == 2){ //UTA_RAT_UMTS
+                    mServingCell.setText("uarfcn=" + uarfcn + ",psc=" + psc + ",rscp=" + rscp);
+                }
+            }
+            p.recycle();
+        }
     };
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             AsyncResult ar;
             switch (msg.what) {
-                case EVENT_PHONE_STATE_CHANGED:
-                    updatePhoneState();
-                    break;
-
-                case EVENT_SIGNAL_STRENGTH_CHANGED:
-                    updateSignalStrength();
-                    break;
-
-                case EVENT_SERVICE_STATE_CHANGED:
-                    updateServiceState();
-                    updatePowerState();
-                    updateImsVoLteProvisionedState();
-                    break;
-
                 case EVENT_QUERY_PREFERRED_TYPE_DONE:
                     ar= (AsyncResult) msg.obj;
                     if (ar.exception == null) {
@@ -260,7 +305,12 @@ public class RadioInfo extends Activity {
         setContentView(R.layout.radio_info);
 
         mTelephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
-        phone = PhoneFactory.getDefaultPhone();
+        Intent intent = getIntent();
+        if(intent != null) {
+            mPhoneId = intent.getIntExtra(PhoneConstants.PHONE_KEY,SubscriptionManager.DEFAULT_PHONE_INDEX);
+        }
+        log("receive phone id: " + mPhoneId);
+        phone = PhoneFactory.getPhone(mPhoneId);
 
         mDeviceId= (TextView) findViewById(R.id.imei);
         number = (TextView) findViewById(R.id.number);
@@ -274,6 +324,7 @@ public class RadioInfo extends Activity {
         mMwi = (TextView) findViewById(R.id.mwi);
         mCfi = (TextView) findViewById(R.id.cfi);
         mLocation = (TextView) findViewById(R.id.location);
+        mServingCell = (TextView) findViewById(R.id.serving_cell);
         mNeighboringCids = (TextView) findViewById(R.id.neighboring);
         mCellInfo = (TextView) findViewById(R.id.cellinfo);
         mDcRtInfoTv = (TextView) findViewById(R.id.dcrtinfo);
@@ -335,21 +386,57 @@ public class RadioInfo extends Activity {
             oemInfoButton.setEnabled(false);
         }
 
-        mPhoneStateReceiver = new PhoneStateIntentReceiver(this, mHandler);
-        mPhoneStateReceiver.notifySignalStrength(EVENT_SIGNAL_STRENGTH_CHANGED);
-        mPhoneStateReceiver.notifyServiceState(EVENT_SERVICE_STATE_CHANGED);
-        mPhoneStateReceiver.notifyPhoneCallState(EVENT_PHONE_STATE_CHANGED);
-
         phone.getPreferredNetworkType(
                 mHandler.obtainMessage(EVENT_QUERY_PREFERRED_TYPE_DONE));
         phone.getNeighboringCids(
                 mHandler.obtainMessage(EVENT_QUERY_NEIGHBORING_CIDS_DONE));
 
-        CellLocation.requestLocationUpdate();
+        String[] requestStr = new String[] {Integer.toString(RIL_OEM_HOOK_STRING_GET_SCELL_INFO)};
+        phone.invokeOemRilRequestStrings(requestStr, null);
+
+        phone.updateServiceLocation();
 
         // Get current cell info
-        mCellInfoValue = mTelephonyManager.getAllCellInfo();
+        try {
+            mCellInfoValue = phone.getAllCellInfo();
+        } catch(NullPointerException ex) {
+            mCellInfoValue = null;
+        }
         log("onCreate: mCellInfoValue=" + mCellInfoValue);
+    }
+
+    private int getSubId() {
+        int subId = SubscriptionManager.DEFAULT_SUBSCRIPTION_ID;
+        int subIds[] = SubscriptionManager.getSubId(mPhoneId);
+        if(subIds != null && subIds.length > 0) {
+            subId = subIds[0];
+        }
+        if(!SubscriptionManager.isValidSubscriptionId(subId)) {
+            subId = SubscriptionManager.DEFAULT_SUBSCRIPTION_ID;
+        }
+        return subId;
+    }
+
+    private CellLocation getCellLocation() {
+        try {
+            Bundle data = new Bundle();
+            phone.getCellLocation().fillInNotifierBundle(data);
+            if (data.isEmpty()) return null;
+            CellLocation cl = CellLocation.newFromBundle(data);
+            if (cl.isEmpty())
+                return null;
+            return cl;
+        } catch (NullPointerException ex) {
+            return null;
+        }
+    }
+
+    private int getDataState() {
+        try{
+            return DefaultPhoneNotifier.convertDataState(phone.getDataConnectionState());
+        } catch (NullPointerException ex) {
+            return TelephonyManager.DATA_DISCONNECTED;
+        }
     }
 
     @Override
@@ -361,7 +448,7 @@ public class RadioInfo extends Activity {
         updateMessageWaiting();
         updateCallRedirect();
         updateServiceState();
-        updateLocation(mTelephonyManager.getCellLocation());
+        updateLocation(getCellLocation());
         updateDataState();
         updateDataStats();
         updateDataStats2();
@@ -376,7 +463,7 @@ public class RadioInfo extends Activity {
 
         log("onResume: register phone & data intents");
 
-        mPhoneStateReceiver.registerIntent();
+        mPhoneStateListener = new PhoneStateListenerMultiSIM(getSubId());
         mTelephonyManager.listen(mPhoneStateListener,
                   PhoneStateListener.LISTEN_DATA_CONNECTION_STATE
                 | PhoneStateListener.LISTEN_DATA_ACTIVITY
@@ -384,7 +471,11 @@ public class RadioInfo extends Activity {
                 | PhoneStateListener.LISTEN_MESSAGE_WAITING_INDICATOR
                 | PhoneStateListener.LISTEN_CALL_FORWARDING_INDICATOR
                 | PhoneStateListener.LISTEN_CELL_INFO
-                | PhoneStateListener.LISTEN_DATA_CONNECTION_REAL_TIME_INFO);
+                | PhoneStateListener.LISTEN_DATA_CONNECTION_REAL_TIME_INFO
+                | PhoneStateListener.LISTEN_SERVICE_STATE
+                | PhoneStateListener.LISTEN_SIGNAL_STRENGTH
+                | PhoneStateListener.LISTEN_CALL_STATE
+                | PhoneStateListener.LISTEN_OEM_HOOK_RAW_EVENT);
     }
 
     @Override
@@ -393,7 +484,6 @@ public class RadioInfo extends Activity {
 
         log("onPause: unregister phone & data intents");
 
-        mPhoneStateReceiver.unregisterIntent();
         mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
     }
 
@@ -419,7 +509,7 @@ public class RadioInfo extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Get the TOGGLE DATA menu item in the right state.
         MenuItem item = menu.findItem(MENU_ITEM_TOGGLE_DATA);
-        int state = mTelephonyManager.getDataState();
+        int state = getDataState();
         boolean visible = true;
 
         switch (state) {
@@ -451,7 +541,12 @@ public class RadioInfo extends Activity {
 
     private void updateCellInfoListRate() {
         cellInfoListRateButton.setText("CellInfoListRate " + mCellInfoListRateHandler.getRate());
-        updateCellInfoTv(mTelephonyManager.getAllCellInfo());
+        try {
+            mCellInfoValue = phone.getAllCellInfo();
+        } catch(NullPointerException ex) {
+            mCellInfoValue = null;
+        }
+        updateCellInfoTv(mCellInfoValue);
     }
 
     private void updateDnsCheckState() {
@@ -463,19 +558,21 @@ public class RadioInfo extends Activity {
     updateSignalStrength() {
         // TODO PhoneStateIntentReceiver is deprecated and PhoneStateListener
         // should probably used instead.
-        int state = mPhoneStateReceiver.getServiceState().getState();
+        int state = phone.getServiceState().getState();
         Resources r = getResources();
 
         if ((ServiceState.STATE_OUT_OF_SERVICE == state) ||
                 (ServiceState.STATE_POWER_OFF == state)) {
             dBm.setText("0");
+            return;
         }
+        SignalStrength signalStrength=  phone.getSignalStrength();
 
-        int signalDbm = mPhoneStateReceiver.getSignalStrengthDbm();
+        int signalDbm = (signalStrength != null)?signalStrength.getDbm():0;
 
         if (-1 == signalDbm) signalDbm = 0;
 
-        int signalAsu = mPhoneStateReceiver.getSignalStrengthLevelAsu();
+        int signalAsu = (signalStrength != null)?signalStrength.getAsuLevel():0;
 
         if (-1 == signalAsu) signalAsu = 0;
 
@@ -576,7 +673,7 @@ public class RadioInfo extends Activity {
 
     private final void
     updateServiceState() {
-        ServiceState serviceState = mPhoneStateReceiver.getServiceState();
+        ServiceState serviceState = phone.getServiceState();
         int state = serviceState.getState();
         Resources r = getResources();
         String display = r.getString(R.string.radioInfo_unknown);
@@ -607,7 +704,7 @@ public class RadioInfo extends Activity {
 
     private final void
     updatePhoneState() {
-        PhoneConstants.State state = mPhoneStateReceiver.getPhoneState();
+        PhoneConstants.State state = phone.getState();
         Resources r = getResources();
         String display = r.getString(R.string.radioInfo_unknown);
 
@@ -628,7 +725,7 @@ public class RadioInfo extends Activity {
 
     private final void
     updateDataState() {
-        int state = mTelephonyManager.getDataState();
+        int state = getDataState();
         Resources r = getResources();
         String display = r.getString(R.string.radioInfo_unknown);
 
@@ -652,7 +749,7 @@ public class RadioInfo extends Activity {
 
     private final void updateNetworkType() {
         Resources r = getResources();
-        String display = SystemProperties.get(TelephonyProperties.PROPERTY_DATA_NETWORK_TYPE,
+        String display = mTelephonyManager.getTelephonyProperty(mPhoneId, TelephonyProperties.PROPERTY_DATA_NETWORK_TYPE,
                 r.getString(R.string.radioInfo_unknown));
 
         network.setText(display);
@@ -869,6 +966,10 @@ public class RadioInfo extends Activity {
             // the content provider, which causes it to be loaded in a process
             // other than the Dialer process, which causes a lot of stuff to
             // break.
+            int subId = getSubId();
+            if(SubscriptionManager.isUsableSubIdValue(subId)) {
+                intent.putExtra("subscription_id", subId);
+            }
             intent.setClassName("com.android.phone",
                     "com.android.phone.SimContacts");
             startActivity(intent);
@@ -884,6 +985,10 @@ public class RadioInfo extends Activity {
             // the content provider, which causes it to be loaded in a process
             // other than the Dialer process, which causes a lot of stuff to
             // break.
+            int subId = getSubId();
+            if(SubscriptionManager.isUsableSubIdValue(subId)) {
+                intent.putExtra("com.android.phone.settings.SubscriptionInfoHelper.SubscriptionId", subId);
+            }
             intent.setClassName("com.android.phone",
                     "com.android.phone.settings.fdn.FdnList");
             startActivity(intent);
@@ -893,8 +998,14 @@ public class RadioInfo extends Activity {
 
     private MenuItem.OnMenuItemClickListener mViewSDNCallback = new MenuItem.OnMenuItemClickListener() {
         public boolean onMenuItemClick(MenuItem item) {
-            Intent intent = new Intent(
-                    Intent.ACTION_VIEW, Uri.parse("content://icc/sdn"));
+           Uri uri = Uri.parse("content://icc/sdn");
+           int subId = getSubId();
+           if(SubscriptionManager.isUsableSubIdValue(subId)) {
+               uri = uri.buildUpon().appendPath("subId")
+                        .appendPath(String.valueOf(subId)).build();
+           }
+
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             // XXX We need to specify the component here because if we don't
             // the activity manager will try to resolve the type by calling
             // the content provider, which causes it to be loaded in a process
@@ -917,6 +1028,7 @@ public class RadioInfo extends Activity {
     private MenuItem.OnMenuItemClickListener mSelectBandCallback = new MenuItem.OnMenuItemClickListener() {
         public boolean onMenuItemClick(MenuItem item) {
             Intent intent = new Intent();
+            intent.putExtra(PhoneConstants.PHONE_KEY, mPhoneId);
             intent.setClass(RadioInfo.this, BandMode.class);
             startActivity(intent);
             return true;
@@ -925,7 +1037,7 @@ public class RadioInfo extends Activity {
 
     private MenuItem.OnMenuItemClickListener mToggleData = new MenuItem.OnMenuItemClickListener() {
         public boolean onMenuItemClick(MenuItem item) {
-            int state = mTelephonyManager.getDataState();
+            int state = getDataState();
             switch (state) {
                 case TelephonyManager.DATA_CONNECTED:
                     phone.setDataEnabled(false);
@@ -1118,6 +1230,14 @@ public class RadioInfo extends Activity {
             updateSmscButton.setEnabled(false);
             phone.setSmscAddress(smsc.getText().toString(),
                     mHandler.obtainMessage(EVENT_UPDATE_SMSC_DONE));
+            if(smsc.getText().toString().trim().length() > 0){        		
+            	updateSmscButton.setEnabled(false);
+            	phone.setSmscAddress(smsc.getText().toString(),
+            		mHandler.obtainMessage(EVENT_UPDATE_SMSC_DONE));
+            }else{
+            	Toast.makeText(RadioInfo.this, R.string.smsc_input_first, 
+            		Toast.LENGTH_SHORT).show();
+            }
         }
     };
 

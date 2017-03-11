@@ -210,6 +210,11 @@ public class Status extends PreferenceActivity {
             removePreferenceFromScreen(KEY_IMEI_INFO);
         }
 
+
+        if((SystemProperties.get("persist.ril-daemon.disable")).equals("1")){
+           removePreferenceFromScreen(KEY_SIM_STATUS);
+            removePreferenceFromScreen(KEY_IMEI_INFO);
+         }
         // Make every pref on this screen copy its data to the clipboard on longpress.
         // Super convenient for capturing the IMEI, MAC addr, serial, etc.
         getListView().setOnItemLongClickListener(
@@ -218,8 +223,7 @@ public class Status extends PreferenceActivity {
                 public boolean onItemLongClick(AdapterView<?> parent, View view,
                         int position, long id) {
                     ListAdapter listAdapter = (ListAdapter) parent.getAdapter();
-                    Preference pref = (Preference) listAdapter.getItem(position);
-
+                    Preference pref = (Preference) listAdapter.getItem(position);				
                     ClipboardManager cm = (ClipboardManager)
                             getSystemService(Context.CLIPBOARD_SERVICE);
                     cm.setText(pref.getSummary());

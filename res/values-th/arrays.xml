@@ -37,6 +37,7 @@
     <item msgid="7489864775127957179">"5 นาที"</item>
     <item msgid="2314124409517439288">"10 นาที"</item>
     <item msgid="6864027152847611413">"30 นาที"</item>
+    <item>"ไม่เลย"</item>
   </string-array>
   <string-array name="dream_timeout_entries">
     <item msgid="3149294732238283185">"ไม่เลย"</item>
@@ -534,5 +535,7 @@
     <item msgid="3170497246594232819">"ม่วง"</item>
     <item msgid="4608643045752965568">"ชมพู"</item>
     <item msgid="6131821495505931173">"แดง"</item>
+    <item msgid="6131821495505931173">"สีส้ม"</item>
+    <item msgid="6131821495505931173">"แสงสีเทา"</item>
   </string-array>
 </resources>

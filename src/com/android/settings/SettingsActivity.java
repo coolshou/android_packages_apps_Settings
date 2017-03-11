@@ -112,6 +112,10 @@ import com.android.settings.wifi.AdvancedWifiSettings;
 import com.android.settings.wifi.SavedAccessPointsWifiSettings;
 import com.android.settings.wifi.WifiSettings;
 import com.android.settings.wifi.p2p.WifiP2pSettings;
+import com.android.settings.HdmiSettings;
+import com.android.settings.ScreenshotSetting;
+import com.android.settings.UsbSetting;
+import com.android.settings.dualscreen.DualscreenSettings;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -120,6 +124,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import android.os.SystemProperties;
 
 import static com.android.settings.dashboard.DashboardTile.TILE_ID_UNDEFINED;
 
@@ -238,7 +243,9 @@ public class SettingsActivity extends Activity
             R.id.print_settings,
             R.id.nfc_payment_settings,
             R.id.home_settings,
-            R.id.dashboard
+            R.id.dashboard,
+            R.id.hdmi_settings,
+            R.id.screenshot_settings
     };
 
     private static final String[] ENTRY_FRAGMENTS = {
@@ -279,6 +286,7 @@ public class SettingsActivity extends Activity
             AndroidBeam.class.getName(),
             WifiDisplaySettings.class.getName(),
             PowerUsageSummary.class.getName(),
+            BatterySaverSettings.class.getName(),
             AccountSyncSettings.class.getName(),
             AccountSettings.class.getName(),
             CryptKeeperSettings.class.getName(),
@@ -302,7 +310,11 @@ public class SettingsActivity extends Activity
             AppNotificationSettings.class.getName(),
             OtherSoundSettings.class.getName(),
             QuickLaunchSettings.class.getName(),
-            ApnSettings.class.getName()
+            ApnSettings.class.getName(),
+            HdmiSettings.class.getName(),
+            ScreenshotSetting.class.getName(),
+            UsbSetting.class.getName(),
+            DualscreenSettings.class.getName()
     };
 
 
@@ -1160,7 +1172,7 @@ public class SettingsActivity extends Activity
                     }
                 } else if (id == R.id.bluetooth_settings) {
                     // Remove Bluetooth Settings if Bluetooth service is not available.
-                    if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
+                    if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)||(SystemProperties.get("ro.rk.bt_enable", "true").equals("false"))) {
                         removeTile = true;
                     }
                 } else if (id == R.id.data_usage_settings) {
@@ -1217,6 +1229,19 @@ public class SettingsActivity extends Activity
                             UserManager.DISALLOW_DEBUGGING_FEATURES)) {
                         removeTile = true;
                     }
+                } else if(id ==R.id.hdmi_settings){
+                     boolean isTablet = "box".equals(SystemProperties.get("ro.target.product", "tablet"));
+                     if (isTablet || SystemProperties.get("ro.rk.hdmi_enable", "true").equals("false")){
+                        removeTile = true;
+                     }
+                } else if(id ==R.id.screenshot_settings){
+                     if (SystemProperties.get("ro.rk.screenshot_enable", "true").equals("false")){
+                        removeTile = true;
+                     }
+                } else if(id ==R.id.usb_settings){
+                     if (!"box".equals(SystemProperties.get("ro.target.product", "tablet"))){
+                        removeTile = true;
+                     }
                 }
 
                 if (UserHandle.MU_ENABLED && UserHandle.myUserId() != 0

@@ -37,6 +37,7 @@
     <item msgid="7489864775127957179">"5分"</item>
     <item msgid="2314124409517439288">"10分"</item>
     <item msgid="6864027152847611413">"30分"</item>
+    <item>"起動しない"</item>
   </string-array>
   <string-array name="dream_timeout_entries">
     <item msgid="3149294732238283185">"起動しない"</item>
@@ -534,5 +535,7 @@
     <item msgid="3170497246594232819">"パープル"</item>
     <item msgid="4608643045752965568">"ピンク"</item>
     <item msgid="6131821495505931173">"レッド"</item>
+    <item msgid="6131821495505931173">"オレンジ"</item>
+    <item msgid="6131821495505931173">"ライトグレー"</item>
   </string-array>
 </resources>

@@ -37,6 +37,7 @@
     <item msgid="7489864775127957179">"5 λεπτά"</item>
     <item msgid="2314124409517439288">"10 λεπτά"</item>
     <item msgid="6864027152847611413">"30 λεπτά"</item>
+    <item>"Ποτέ"</item>
   </string-array>
   <string-array name="dream_timeout_entries">
     <item msgid="3149294732238283185">"Ποτέ"</item>
@@ -534,5 +535,7 @@
     <item msgid="3170497246594232819">"Μοβ"</item>
     <item msgid="4608643045752965568">"Ροζ"</item>
     <item msgid="6131821495505931173">"Κόκκινο"</item>
+    <item msgid="6131821495505931173">"πορτοκάλι"</item>
+    <item msgid="6131821495505931173">"Ανοιχτό Γκρι"</item>
   </string-array>
 </resources>

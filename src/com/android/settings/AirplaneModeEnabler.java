@@ -39,6 +39,11 @@ public class AirplaneModeEnabler implements Preference.OnPreferenceChangeListene
     private final SwitchPreference mSwitchPref;
 
     private static final int EVENT_SERVICE_STATE_CHANGED = 3;
+    private static final int EVENT_ENABLE_AIRPLANE_SWITCH = 4;
+
+    //UI protection to avoid frequent airplane mode change
+    //re-enable the swtich after RESUME_SWITCH_DELAYED
+    private static final int RESUME_SWITCH_DELAYED = 1000;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -46,6 +51,9 @@ public class AirplaneModeEnabler implements Preference.OnPreferenceChangeListene
             switch (msg.what) {
                 case EVENT_SERVICE_STATE_CHANGED:
                     onAirplaneModeChanged();
+                    break;
+                case EVENT_ENABLE_AIRPLANE_SWITCH:
+                    mSwitchPref.setEnabled(true);
                     break;
             }
         }
@@ -120,6 +128,8 @@ public class AirplaneModeEnabler implements Preference.OnPreferenceChangeListene
      * Called when someone clicks on the checkbox preference.
      */
     public boolean onPreferenceChange(Preference preference, Object newValue) {
+        mSwitchPref.setEnabled(false);
+        mHandler.sendEmptyMessageDelayed(EVENT_ENABLE_AIRPLANE_SWITCH ,RESUME_SWITCH_DELAYED);
         if (Boolean.parseBoolean(
                     SystemProperties.get(TelephonyProperties.PROPERTY_INECM_MODE))) {
             // In ECM mode, do not update database at this point

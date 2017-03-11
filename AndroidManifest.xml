@@ -78,7 +78,8 @@
             android:hardwareAccelerated="true"
             android:requiredForAllUsers="true"
             android:supportsRtl="true"
-            android:allowBackup="false">
+            android:allowBackup="false"
+            android:name=".Screenshot">
 
         <!-- Settings -->
 
@@ -389,6 +390,72 @@
                 android:resource="@id/wireless_settings" />
         </activity-alias>
 
+    <!--$_rbox_$_modify_$_blb_20150107: add for ethernet-->
+	 <!--$_rbox_$_modify_$_begin-->
+         <activity android:name="Settings$EthernetSettingsActivity"
+                android:label="@string/ethernet_settings_title"
+                android:taskAffinity="">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.VOICE_LAUNCH" />
+                <category android:name="com.android.settings.SHORTCUT" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.EthernetSettings" />
+            <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
+                android:resource="@id/wireless_settings" />
+        </activity>
+        <!-- Keep compatibility with old shortcuts. -->
+         <activity-alias android:name=".EthernetSettings"
+                android:label="@string/ethernet_settings"
+                android:targetActivity="Settings$EthernetSettingsActivity"
+                android:exported="true">
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.EthernetSettings" />
+            <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
+                android:resource="@id/wireless_settings" />
+         </activity-alias>
+ 
+	  <!--$_rbox_$_modify_$_end-->
+	 <!--$_rbox_$_modify_$_chenzhi_20120309-->
+<!--$_rbox_$_modify_$_begin-->
+      <!--  <activity android:name="com.android.settings.pppoe.PppoeAccountsSettings" -->
+
+        <activity android:name=".pppoe.PppoeAccountsSettings" 
+                android:label="@string/pppoe_accounts_settings"
+                android:theme="@android:style/Theme.Holo.DialogWhenLarge"
+                android:configChanges="orientation|keyboardHidden"
+                android:launchMode="singleTask">
+                <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
+                        <category android:name="android.intent.category.DEFAULT" />
+                </intent-filter>
+        </activity>
+
+
+     <!--  <activity android:name="com.android.settings.pppoe.PppoeAccountsEditor" -->
+        <activity android:name=".pppoe.PppoeAccountsEditor" 
+                android:theme="@android:style/Theme.Holo.DialogWhenLarge"
+                android:label="@string/pppoe_accounts_edit">
+                <intent-filter>
+                        <action android:name="android.intent.action.VIEW" />
+                        <action android:name="android.intent.action.EDIT" />
+                        <category android:name="android.intent.category.DEFAULT" />
+                        <data android:mimeType="vnd.android.cursor.item/pppoe-accounts" />
+                </intent-filter>
+
+                <intent-filter>
+                        <action android:name="android.intent.action.INSERT" />
+                        <category android:name="android.intent.category.DEFAULT" />
+                        <data android:mimeType="vnd.android.cursor.dir/pppoe-accounts" />
+                </intent-filter>
+        </activity>
+
+        <provider android:name=".pppoe.PppoeAccountsContentProvider"
+                android:authorities="pppoe" />
+<!--$_rbox_$_modify_$_end-->
+ 
         <activity android:name="Settings$WifiP2pSettingsActivity"
                 android:taskAffinity="com.android.settings"
                 android:parentActivityName="Settings$WifiSettingsActivity">
@@ -1589,6 +1656,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        
+        <activity android:name="SMSCSettingActivity" android:label="@string/SMSC"
+            android:process="com.android.phone">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <receiver android:name="TestingSettingsBroadcastReceiver">
             <intent-filter>
@@ -1793,6 +1868,24 @@
             <meta-data android:name="com.android.settings.PRIMARY_PROFILE_CONTROLLED"
                 android:value="true" />
         </activity>
+		
+		<!-- add by wgh-->
+		<activity android:name="Settings$DualscreenSettingsActivity"
+                android:label="@string/dualscreen_setting"
+                android:taskAffinity="">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.settings.DREAM_SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.android.settings.SHORTCUT" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.dualscreen.DualscreenSettings" />
+            <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
+                android:resource="@id/display_settings" />
+            <meta-data android:name="com.android.settings.PRIMARY_PROFILE_CONTROLLED"
+                android:value="true" />
+        </activity>
 
         <activity android:name="Settings$UserSettingsActivity"
                 android:label="@string/user_settings_title"
@@ -1904,6 +1997,34 @@
                 android:value="true" />
         </activity>
 
+        
+        <!-- $_rbox_$_modify_$_zhengyang begin: added for screen settings -->
+        <activity android:name="Settings$ScreenSettingsActivity"
+                  android:label="@string/screen_settings"
+                  android:clearTaskOnLaunch="true"
+                  android:parentActivityName="Settings$DisplaySettingsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="com.android.settings.SCREEN_SETTINGS" />
+                <action android:name="android.settings.SCREEN_SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.VOICE_LAUNCH" />
+                <category android:name="com.android.settings.SHORTCUT" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.DisplaySettings" />
+            <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
+                android:resource="@id/display_settings" />
+        </activity>
+        
+        <activity android:name=".screen.ScreenScaleActivity"
+                       android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>    
+        <!-- $_rbox_$_modify_$_zhengyang: end for screen settings -->
         <!-- Keep compatibility with old shortcuts. -->
         <activity-alias android:name="Settings$SoundSettingsActivity"
                 android:label="@string/notification_settings"
@@ -2069,6 +2190,70 @@
                 <action android:name="android.content.action.SEARCH_INDEXABLES_PROVIDER" />
             </intent-filter>
         </provider>
+        
+        <!-- HDMI -->
+        <activity android:name="Settings$HdmiSettingsActivity"
+                android:label="@string/hdmi"
+                android:taskAffinity="">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.VOICE_LAUNCH" />
+                <category android:name="com.android.settings.SHORTCUT" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.HdmiSettings" />
+            <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
+                android:resource="@id/hdmi_settings" />
+            <meta-data android:name="com.android.settings.PRIMARY_PROFILE_CONTROLLED"
+                android:value="true" />
+        </activity>
+        
+        <receiver android:name="HdmiReceiver">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.HDMI_PLUG"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+       </receiver>
 
+       <!-- SCREENSHOT -->
+        <activity android:name="Settings$ScreenshotSettingsActivity"
+                android:label="@string/screenshot_manager"
+                android:taskAffinity="">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.VOICE_LAUNCH" />
+                <category android:name="com.android.settings.SHORTCUT" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.ScreenshotSetting" />
+            <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
+                android:resource="@id/screenshot_settings" />
+            <meta-data android:name="com.android.settings.PRIMARY_PROFILE_CONTROLLED"
+                android:value="true" />
+        </activity>
+
+     <!--$_rbox_$_modify_$_zhangxueguang_$_begin_$_20120319_$-->
+      <!-- SoundDevicesManager -->
+        <activity android:name=".SoundDevicesManager"
+                  android:label="@string/sound_devices_manager"
+                  >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>    
+        <!--$_rbox_$_modify_$_zhangxueguang_$_end_$_20120319_$-->
+      <!--$_rbox_$_modify_$_chenzhi_2012014: add for usb host/device switch-->
+        <!--$_rbox_$_modify_$_begin-->
+         <activity android:name="Settings$UsbConnectSettingsActivity"
+                android:label="@string/usb_settings">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.VOICE_LAUNCH" />
+            </intent-filter>
+        </activity>
+       <!--$_rbox_$_modify_$_end-->
     </application>
 </manifest>

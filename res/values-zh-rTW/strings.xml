@@ -875,6 +875,7 @@
     <string name="system_update_settings_list_item_title" msgid="3342887311059985961">"系統更新"</string>
     <string name="system_update_settings_list_item_summary" msgid="3853057315907710747"></string>
     <string name="firmware_version" msgid="4801135784886859972">"Android 版本"</string>
+    <string name="security_patch" msgid="8438384045870296634">"Android 安全性修補程式等級"</string>
     <string name="model_number" msgid="3765737700545384794">"型號"</string>
     <string name="fcc_equipment_id" msgid="149114368246356737">"設備 ID"</string>
     <string name="baseband_version" msgid="1848990160763524801">"基頻版本"</string>
@@ -2516,4 +2517,16 @@
     <string name="imei_information_title" msgid="8499085421609752290">"IMEI 資訊"</string>
     <string name="imei_information_summary" msgid="2074095606556565233">"IMEI 相關資訊"</string>
     <string name="slot_number" msgid="3762676044904653577">"(插槽 <xliff:g id="SLOT_NUM">%1$d</xliff:g>)"</string>
+
+    <string name="switching_default_data_sub">"請稍候..."</string>
+    <string name="cellular_data_switch_title">"行動數據"</string>
+    <string name="cellular_data_switch_open">"行動數據開啟"</string>
+    <string name="cellular_data_switch_close">"行動數據關閉"</string>
+    <string name="screen_orientation">螢幕方向</string>
+    <string name="m_horizontal_screen">橫屏</string>
+    <string name="m_vertical_screen">竪屏</string>
+    <string name="m_reverse_horizontal">反向橫屏</string>
+    <string name="m_reverse_vertical">反向竪屏</string>
+    <string name="screensaver_settings_title">互動屏保</string>
+    <string name="screenscale">螢幕縮放</string>
 </resources>
